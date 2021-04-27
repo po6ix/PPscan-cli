@@ -1,0 +1,2 @@
+create table if not exists domains (url text, flag int);
+create table if not exists reports (url text, file text, line int, column int, content text);
