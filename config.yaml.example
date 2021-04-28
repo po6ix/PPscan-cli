@@ -1,0 +1,6 @@
+mysql:
+    host: localhost
+    port: 3306
+    user: ppscan
+    pass: 66d92cccf7a1c53b2a9251aca3cb0aff0497f4a0b8a61194731323547371ad78
+    database: ppscan
