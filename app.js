@@ -4,9 +4,9 @@ const { scanUrl, delay, closeBrowser, patternMatch } = require('./lib/util');
 const { match } = require('assert');
 
 const MAX_CONNECTION = 3;
-const MAX_VERBOSE = 3;
-const EXTENSION_BLACKLIST = ['.jpg', '.png', 'jpeg', '.gif']
-const INSTANCE_SIZE = 8;
+const MAX_VERBOSITY = 1;
+const EXTENSION_BLACKLIST = ['.jpg', '.png', 'jpeg', '.gif', '.css', '.ttf', '.js']
+const INSTANCE_SIZE = 1;
 
 const queue = [process.argv[2]];
 const done = {};
@@ -38,11 +38,9 @@ function waitForConnection(i) {
 
 function filter_url(url) {
     if (done_explicit.has(url)) {
-        // console.log('DUP 1');
         return true;
     }
-    if (done[url] >= MAX_VERBOSE) {
-        // console.log('DUP 2');
+    if (done[url] >= MAX_VERBOSITY) {
         return true;
     }
 
@@ -57,14 +55,20 @@ function filter_url(url) {
 }
 
 function filter_resource(url) {
-    const { pathname, hostname } = new URL(url);
-    if (EXTENSION_BLACKLIST.includes(pathname.substr(pathname.lastIndexOf('.')))) {
-        return true;
+    try {
+        const { pathname, hostname } = new URL(url);
+
+        if (EXTENSION_BLACKLIST.includes(pathname.substr(pathname.lastIndexOf('.')))) {
+            return true;
+        } else if (!hostname.endsWith(baseHost)) {
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch {
+        return false;
     }
-    if (!hostname.endsWith(baseHost)) {
-        return true;
-    }
-    return false;
 }
 
 function TryScan(instance_id, url) {
@@ -91,10 +95,19 @@ function TryScan(instance_id, url) {
                             queue.push(item);
                         }
                     }
-                    for (let content of ret[1]) {
-                        if (patternMatch(content)) {
-                            console.log(chalk.green(`${instance_id} > matched at ${target.href}`));
-                        }
+                    for (let key in ret[1]) {
+                        const content = ret[1][key];
+
+                        // if (key == 'http://archive.spectator.co.uk/js/jquery.query.js') {
+                        //     console.log('!!', key, content);
+                        // }
+                        patternMatch(key, content)
+                            .then(match => {
+                                console.log(JSON.stringify(match));
+                                if (match === 'found') {
+                                    console.log(chalk.green(`${instance_id} > matched at ${target.href} by ${key}`));
+                                }
+                            });
                     }
                     connection--;
                     resolve();
