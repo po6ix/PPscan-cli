@@ -98,7 +98,7 @@ function TryScan(instance_id, url) {
                     for (let key in ret[1]) {
                         const content = ret[1][key];
 
-                        patternMatch(chalk.green(`${instance_id} > matched ${JSON.stringify(key)} used by ${JSON.stringify(target.href)}`), content);
+                        patternMatch(instance_id, target, key, content);
                     }
                     connection--;
                     resolve();
