@@ -6,7 +6,7 @@ const { match } = require('assert');
 const MAX_CONNECTION = 3;
 const MAX_VERBOSITY = 1;
 const EXTENSION_BLACKLIST = ['.jpg', '.png', 'jpeg', '.gif', '.css', '.ttf', '.js']
-const INSTANCE_SIZE = 1;
+const INSTANCE_SIZE = 4;
 
 const queue = [process.argv[2]];
 const done = {};
@@ -98,16 +98,7 @@ function TryScan(instance_id, url) {
                     for (let key in ret[1]) {
                         const content = ret[1][key];
 
-                        // if (key == 'http://archive.spectator.co.uk/js/jquery.query.js') {
-                        //     console.log('!!', key, content);
-                        // }
-                        patternMatch(key, content)
-                            .then(match => {
-                                console.log(JSON.stringify(match));
-                                if (match === 'found') {
-                                    console.log(chalk.green(`${instance_id} > matched at ${target.href} by ${key}`));
-                                }
-                            });
+                        patternMatch(chalk.green(`${instance_id} > matched ${JSON.stringify(key)} used by ${JSON.stringify(target.href)}`), content);
                     }
                     connection--;
                     resolve();
