@@ -1,12 +1,11 @@
 const process = require('process');
 const chalk = require('chalk');
 const { scanUrl, delay, closeBrowser, patternMatch } = require('./lib/util');
-const { match } = require('assert');
 
 const MAX_CONNECTION = 3;
 const MAX_VERBOSITY = 1;
 const EXTENSION_BLACKLIST = ['.jpg', '.png', 'jpeg', '.gif', '.css', '.ttf', '.js']
-const INSTANCE_SIZE = 4;
+const INSTANCE_SIZE = process.env['INSTANCE_SIZE'] ? process.env['INSTANCE_SIZE'] : 4;
 
 const queue = [process.argv[2]];
 const done = {};
