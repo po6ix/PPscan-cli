@@ -1,4 +1,0 @@
-create table if not exists domains (idx int auto_increment primary key, url text, flag int, reason text, priority int);
-create table if not exists reports (idx int auto_increment primary key, url text, file text, line int, col int, description text);
-
-ALTER TABLE domains AUTO_INCREMENT=0;
